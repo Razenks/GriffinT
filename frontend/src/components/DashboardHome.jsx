@@ -1,4 +1,16 @@
 import React from 'react';
+import { 
+  FileText, 
+  BarChart3, 
+  TrendingUp, 
+  Package, 
+  Calendar, 
+  Download, 
+  Filter, 
+  FileSpreadsheet,
+  Printer,
+  ChevronRight
+} from 'lucide-react';
 
 function DashboardHome() {
   // Dados fictícios para simular o banco de dados
@@ -10,90 +22,98 @@ function DashboardHome() {
   ];
 
   return (
-    <div className="space-y-6">
+    // MUDANÇA PRINCIPAL: bg-slate-900 -> bg-slate-50 (Fundo claro, quase branco)
+    <div className="p-6 bg-slate-50 min-h-screen font-sans">
       
       {/* Cabeçalho da Página */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Visão Geral</h1>
-        <p className="text-slate-500">Bem-vindo ao painel de controle GriffinT.</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-amber-600 flex items-center gap-2">
+          <FileText size={32} /> Visão Geral
+        </h1>
+        {/* Ajustado para slate-600 para melhor leitura no fundo claro */}
+        <p className="text-slate-600">Bem-vindo ao painel de controle GriffinT.</p>
       </div>
 
       {/* Cards de Estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
-          <div key={index} className={`bg-white rounded-lg shadow-sm p-6 ${stat.color} hover:shadow-md transition-shadow`}>
+          // bg-white destaca o card sobre o fundo slate-50
+          <div key={index} className={`bg-white rounded-xl shadow-sm border border-slate-200 p-6 ${stat.color} hover:shadow-md transition-all`}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{stat.label}</p>
-                <p className={`mt-2 text-2xl font-bold ${stat.alert ? 'text-red-600' : 'text-slate-900'}`}>{stat.value}</p>
+                <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+                <p className={`mt-2 text-2xl font-bold ${stat.alert ? 'text-red-600' : 'text-slate-800'}`}>{stat.value}</p>
               </div>
-              <span className="text-2xl grayscale opacity-50">{stat.icon}</span>
+              <span className="text-2xl grayscale opacity-70">{stat.icon}</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Área de Ações Rápidas (Substitui o antigo menu de botões) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Área de Conteúdo Inferior */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         
-        {/* Últimas Movimentações (Tabela Simples) */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Últimas Movimentações</h3>
+        {/* Tabela de Últimas Movimentações */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+             Últimas Movimentações
+          </h3>
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm text-left">
-              <thead className="bg-slate-50 text-slate-500">
+              <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                 <tr>
-                  <th className="px-4 py-2">Produto</th>
-                  <th className="px-4 py-2">Tipo</th>
-                  <th className="px-4 py-2 text-right">Qtd</th>
+                  <th className="px-4 py-3 rounded-tl-lg">Produto</th>
+                  <th className="px-4 py-3">Tipo</th>
+                  <th className="px-4 py-3 text-right rounded-tr-lg">Qtd</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                <tr>
-                  <td className="px-4 py-3">Parafuso Sextavado</td>
-                  <td className="px-4 py-3 text-red-500">Saída</td>
-                  <td className="px-4 py-3 text-right">-50</td>
+                <tr className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-slate-700">Parafuso Sextavado</td>
+                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Saída</td>
+                  <td className="px-4 py-3 text-right text-slate-700 font-bold">-50</td>
                 </tr>
-                <tr>
-                  <td className="px-4 py-3">Martelo de Borracha</td>
-                  <td className="px-4 py-3 text-emerald-600">Entrada</td>
-                  <td className="px-4 py-3 text-right">+10</td>
+                <tr className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-slate-700">Martelo de Borracha</td>
+                  <td className="px-4 py-3 text-emerald-600 bg-emerald-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Entrada</td>
+                  <td className="px-4 py-3 text-right text-slate-700 font-bold">+10</td>
                 </tr>
-                 <tr>
-                  <td className="px-4 py-3">Cimento CP-II</td>
-                  <td className="px-4 py-3 text-red-500">Saída</td>
-                  <td className="px-4 py-3 text-right">-2</td>
+                 <tr className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-slate-700">Cimento CP-II</td>
+                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Saída</td>
+                  <td className="px-4 py-3 text-right text-slate-700 font-bold">-2</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <button className="mt-4 w-full text-center text-sm text-amber-600 font-medium hover:text-amber-700">
-            Ver histórico completo →
+          <button className="mt-4 w-full text-center text-sm text-amber-600 font-bold hover:text-amber-700 hover:bg-amber-50 py-2 rounded-lg transition-colors flex items-center justify-center gap-1">
+            Ver histórico completo <ChevronRight size={16} />
           </button>
         </div>
 
-        {/* Atalhos */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Ações Rápidas</h3>
-            <div className="grid grid-cols-2 gap-4">
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-amber-500 transition-colors group">
+        {/* Ações Rápidas */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h3 className="text-lg font-bold text-slate-800 mb-4">Ações Rápidas</h3>
+            <div className="grid grid-cols-2 gap-4 h-full max-h-[250px]">
+                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➕</span>
-                    <span className="font-medium text-slate-700">Nova Entrada</span>
+                    <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Entrada</span>
                 </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-amber-500 transition-colors group">
+                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➖</span>
-                    <span className="font-medium text-slate-700">Nova Saída</span>
+                    <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Saída</span>
                 </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-amber-500 transition-colors group">
+                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">📦</span>
-                    <span className="font-medium text-slate-700">Novo Produto</span>
+                    <span className="font-semibold text-slate-700 group-hover:text-amber-600">Novo Produto</span>
                 </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-amber-500 transition-colors group">
+                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</span>
-                    <span className="font-medium text-slate-700">Relatório</span>
+                    <span className="font-semibold text-slate-700 group-hover:text-amber-600">Relatório</span>
                 </button>
             </div>
         </div>
+
       </div>
     </div>
   );
