@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FileText, 
   BarChart3, 
@@ -70,17 +71,17 @@ function DashboardHome() {
               <tbody className="divide-y divide-slate-100">
                 <tr className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-700">Parafuso Sextavado</td>
-                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Saída</td>
+                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap">Saída</td>
                   <td className="px-4 py-3 text-right text-slate-700 font-bold">-50</td>
                 </tr>
                 <tr className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-700">Martelo de Borracha</td>
-                  <td className="px-4 py-3 text-emerald-600 bg-emerald-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Entrada</td>
+                  <td className="px-4 py-3 text-emerald-600 bg-emerald-50 rounded-md font-medium text-xs w-min whitespace-nowrap">Entrada</td>
                   <td className="px-4 py-3 text-right text-slate-700 font-bold">+10</td>
                 </tr>
                  <tr className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 font-medium text-slate-700">Cimento CP-II</td>
-                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap px-2 py-1">Saída</td>
+                  <td className="px-4 py-3 text-red-600 bg-red-50 rounded-md font-medium text-xs w-min whitespace-nowrap">Saída</td>
                   <td className="px-4 py-3 text-right text-slate-700 font-bold">-2</td>
                 </tr>
               </tbody>
@@ -95,22 +96,22 @@ function DashboardHome() {
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <h3 className="text-lg font-bold text-slate-800 mb-4">Ações Rápidas</h3>
             <div className="grid grid-cols-2 gap-4 h-full max-h-[250px]">
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
-                    <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➕</span>
-                    <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Entrada</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                <Link to={"/home/input"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                      <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➕</span>
+                      <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Entrada</span>
+                </Link>
+                <Link to={"/home/output"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➖</span>
                     <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Saída</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                </Link>
+                <Link to={"/home/new-product"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">📦</span>
                     <span className="font-semibold text-slate-700 group-hover:text-amber-600">Novo Produto</span>
-                </button>
-                <button className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                </Link>
+                <Link to={"/home/relatorios"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">📄</span>
                     <span className="font-semibold text-slate-700 group-hover:text-amber-600">Relatório</span>
-                </button>
+                </Link>
             </div>
         </div>
 

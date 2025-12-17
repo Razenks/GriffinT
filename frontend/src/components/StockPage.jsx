@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Plus, Minus, Trash2, Edit, Package, Search, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Minus, Trash2, Edit, Package, Search, ArrowUpRight, ArrowDownLeft, AlertTriangle } from 'lucide-react';
 
 // Dados fictícios para visualização inicial
 const initialProducts = [
   { id: 1, name: 'Parafuso Sextavado', category: 'Ferragens', quantity: 1200, minStock: 500, price: 0.25 },
   { id: 2, name: 'Martelo de Borracha', category: 'Ferramentas', quantity: 15, minStock: 10, price: 35.00 },
-  { id: 3, name: 'Cimento CP-II', category: 'Materiais', quantity: 40, minStock: 50, price: 28.90 }, // Estoque baixo exemplo
+  { id: 3, name: 'Cimento CP-II', category: 'Materiais', quantity: 40, minStock: 50, price: 28.90 },
   { id: 4, name: 'Lixadeira Orbital', category: 'Elétricos', quantity: 5, minStock: 8, price: 250.00 },
 ];
 
@@ -16,18 +17,44 @@ const initialHistory = [
 ];
 
 function StockPage() {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' ou 'history'
+  const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Lógica simples para filtrar produtos
+  // Estados para o Modal de Exclusão
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
+
+  // Lógica de Filtro
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // --- Funções de Exclusão ---
+
+  // 1. Abre o modal e seleciona o produto
+  const requestDelete = (product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 2. Confirma a exclusão e atualiza a lista
+  const confirmDelete = () => {
+    if (productToDelete) {
+      setProducts(products.filter(p => p.id !== productToDelete.id));
+      setIsDeleteModalOpen(false);
+      setProductToDelete(null);
+    }
+  };
+
+  // 3. Cancela a ação
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setProductToDelete(null);
+  };
+
   return (
-    // MUDANÇA: bg-slate-50 (fundo claro) e texto escuro
-    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans">
+    <div className="p-6 bg-slate-50 min-h-screen text-slate-800 font-sans relative">
       
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -43,20 +70,19 @@ function StockPage() {
             <input 
               type="text" 
               placeholder="Buscar produto..." 
-              // Input branco com borda sutil
               className="bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 transition-all text-slate-700"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Search className="absolute left-3 top-2.5 text-slate-400 w-4 h-4" />
           </div>
-          <button className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 font-medium">
+          <Link to={"/home/new-product"} className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 font-medium">
             <Plus size={18} /> Novo Produto
-          </button>
+          </Link>
         </div>
       </div>
 
-      {/* Cards de Resumo Rápido */}
+      {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <p className="text-slate-500 text-xs uppercase font-semibold tracking-wider">Total de Itens</p>
@@ -85,7 +111,7 @@ function StockPage() {
         </div>
       </div>
 
-      {/* Navegação por Abas */}
+      {/* Abas */}
       <div className="flex gap-6 border-b border-slate-200 mb-6">
         <button 
           onClick={() => setActiveTab('products')}
@@ -107,9 +133,8 @@ function StockPage() {
         </button>
       </div>
 
-      {/* Conteúdo da Tabela */}
+      {/* Tabela */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        
         {activeTab === 'products' ? (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
@@ -141,22 +166,25 @@ function StockPage() {
                     </td>
                     <td className="p-4">
                       <div className="flex justify-center items-center gap-2">
-                         {/* Botão Saída Rápida - Light */}
-                        <button className="p-1.5 rounded-lg bg-slate-100 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-500 transition-all" title="Registrar Saída">
+                        <button className="p-1.5 rounded-lg bg-slate-100 border border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 text-slate-500 transition-all">
                           <Minus size={16} />
                         </button>
-                        {/* Botão Entrada Rápida - Light */}
-                        <button className="p-1.5 rounded-lg bg-slate-100 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 text-slate-500 transition-all" title="Registrar Entrada">
+                        <button className="p-1.5 rounded-lg bg-slate-100 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200 text-slate-500 transition-all">
                           <Plus size={16} />
                         </button>
                       </div>
                     </td>
                     <td className="p-4">
                       <div className="flex justify-center items-center gap-3 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <button className="text-slate-400 hover:text-amber-600 transition-colors" title="Editar Produto">
+                        <button className="text-slate-400 hover:text-amber-600 transition-colors">
                           <Edit size={18} />
                         </button>
-                        <button className="text-slate-400 hover:text-red-600 transition-colors" title="Remover Produto">
+                        {/* Botão de Exclusão atualizado */}
+                        <button 
+                          onClick={() => requestDelete(product)} 
+                          className="text-slate-400 hover:text-red-600 transition-colors" 
+                          title="Remover Produto"
+                        >
                           <Trash2 size={18} />
                         </button>
                       </div>
@@ -167,7 +195,6 @@ function StockPage() {
             </table>
           </div>
         ) : (
-          /* Tabela de Histórico - Light */
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -203,7 +230,6 @@ function StockPage() {
           </div>
         )}
         
-        {/* Estado Vazio */}
         {filteredProducts.length === 0 && activeTab === 'products' && (
            <div className="p-8 text-center text-slate-400">
               <Package size={48} className="mx-auto mb-3 opacity-20"/>
@@ -211,6 +237,42 @@ function StockPage() {
            </div>
         )}
       </div>
+
+      {/* --- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO --- */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl shadow-2xl border border-slate-200 p-6 w-full max-w-sm flex flex-col items-center text-center">
+            
+            <div className="h-14 w-14 bg-red-50 rounded-full flex items-center justify-center mb-4">
+               <Trash2 className="text-red-600" size={28} />
+            </div>
+
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Remover Produto?</h3>
+            <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+              Você tem certeza que deseja remover <br/>
+              <span className="font-bold text-slate-800">"{productToDelete?.name}"</span>? 
+              <br/>Esta ação não pode ser desfeita.
+            </p>
+
+            <div className="flex gap-3 w-full">
+              <button 
+                onClick={cancelDelete}
+                className="flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold shadow-lg shadow-red-500/20 transition-all"
+              >
+                DELETAR
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
