@@ -54,13 +54,15 @@ function Layout() {
     <div className="flex h-screen bg-slate-100 font-sans">
       {/* Sidebar - Desktop */}
       <aside className="hidden md:flex flex-col w-64 bg-slate-900 text-white">
-        <div className="h-16 flex items-center justify-center border-b border-slate-800">
+        <div className="h-16 flex items-center justify-center">
           <img
             src={logo}
             alt="Logo GriffinT"
             className="h-24 w-24 mt-5 object-contain rounded-md shadow-md"
           />
+          
         </div>
+        <div className='h-8 flex items-center justify-center border-b border-slate-800'></div>
 
         <nav className="flex-1 px-2 py-4 space-y-1">
           {menuItems.map((item) => {
