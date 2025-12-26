@@ -1,11 +1,14 @@
 using GriffinT.API.DTOs.Product;
 using GriffinT.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace GriffinT.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ProductService _service;

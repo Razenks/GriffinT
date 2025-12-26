@@ -1,6 +1,9 @@
 using GriffinT.API.Data;
 using GriffinT.API.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +16,12 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString)); // Se fosse SQL Server, seria .UseSqlServer()
-
+    options.UseNpgsql(connectionString));
 // B. Injeção de Dependência dos seus Serviços
 // Toda vez que um Controller pedir "ProductService", o .NET entrega uma instância nova.
 builder.Services.AddScoped<ProductService>();
 // builder.Services.AddScoped<StockService>(); // Descomente quando criar
-// builder.Services.AddScoped<AuthService>();  // Descomente quando criar
+builder.Services.AddScoped<AuthService>();
 
 // C. Configuração do CORS (Vital para o React funcionar)
 builder.Services.AddCors(options =>
@@ -30,6 +32,29 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
+});
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = jwtSettings["issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+    };
 });
 
 // D. Serviços Padrão da API
@@ -58,6 +83,7 @@ app.UseHttpsRedirection();
 // Aplica a política de CORS que criamos acima
 app.UseCors("AllowReactApp");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Mapeia os Controllers (ProductsController, etc)

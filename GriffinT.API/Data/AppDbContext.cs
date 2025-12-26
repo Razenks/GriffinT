@@ -16,7 +16,7 @@ namespace GriffinT.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+                        
             // Exemplo: Configurar relação 1:N (Um Tenant tem muitos Produtos)
             modelBuilder.Entity<Product>()
                 .HasOne<Tenant>()
