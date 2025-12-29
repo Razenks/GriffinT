@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using GriffinT.API.DTOs.Product;
 using GriffinT.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,20 +22,49 @@ namespace GriffinT.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
         {
-            // Em produção, pegue o TenantId do Token JWT do usuário
-            // var tenantId = Guid.Parse(User.FindFirst("TenantId")?.Value);
-            var tenantId = Guid.Parse("SEU-GUID-AQUI");
+            try
+            {
+                var tenantId = GetTenantId(); // <--- Mágica acontece aqui também
+                var result = await _service.CreateAsync(dto, tenantId);
 
-            var result = await _service.CreateAsync(dto, tenantId);
-            return CreatedAtAction(nameof(Create), new { id = result.Id}, result);
+                return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var tenantId = Guid.Parse("SEU-GUID-AQUI");
-            var result = await _service.GetAllAsync(tenantId);
-            return Ok(result);
+            try
+            {
+                var tenantId = GetTenantId();
+                var result = await _service.GetAllAsync(tenantId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
+        }
+
+        private Guid GetTenantId()
+        {
+            // procura no cracha do usuario o campo TenantId
+            var claim = User.FindFirst("TenantId");
+
+            if (claim == null)
+            {
+                // se nao achar, lançar o erro
+                throw new UnauthorizedAccessException("Token inválido: TenantId não encontrado ");
+            }
+
+            // converte o texto do token para GUID
+            return Guid.Parse(claim.Value);
         }
     }
 }

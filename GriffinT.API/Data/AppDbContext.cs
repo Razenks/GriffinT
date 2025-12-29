@@ -12,6 +12,7 @@ namespace GriffinT.API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<StockMovement> StockMovements { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

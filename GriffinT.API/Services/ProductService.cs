@@ -21,8 +21,12 @@ namespace GriffinT.API.Services
             {
                 Name = dto.Name,
                 SKU = dto.SKU,
+                CostPrice = dto.CostPrice,
                 SalePrice = dto.SalePrice,
                 MinStock = dto.MinStock,
+                CategoryId = dto.CategoryId,
+                Description = dto.Description,
+                Quantity = dto.Quantity,
                 TenantId = tenantId, // Garante que o produto é do cliente certo
                 IsActive = true
             };
