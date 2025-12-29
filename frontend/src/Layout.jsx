@@ -6,11 +6,16 @@ function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
+  // 1. LÓGICA DE SEGURANÇA
+  // Tenta pegar do localStorage (que faremos no Login). 
+  // Se não tiver, assume 'Admin' para testes.
+  // Mude para 'Seller' ou 'User' aqui manualmente para testar o sumiço do botão.
+  const userRole = localStorage.getItem('userRole') || 'Vendedor';
+
   const menuItems = [
     {
       name: 'Visão Geral',
       path: '/home',
-      // Este ícone parece ser preenchido (filled), então mantemos simples
       icon: <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" />
     },
     {
@@ -38,6 +43,22 @@ function Layout() {
         </>
       )
     },
+    // --- NOVO ITEM (Gerenciar Usuários) ---
+    {
+      name: 'Gerenciar Usuários',
+      path: '/home/gerenciar-usuarios',
+      // Defina aqui quem pode ver este botão:
+      roles: ['Admin', 'SuperAdmin'], 
+      icon: (
+        <>
+           {/* Ícone de Usuários (Users) */}
+           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+           <circle cx="9" cy="7" r="4" />
+           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </>
+      )
+    },
     {
       name: 'Configurações',
       path: '/home/config',
@@ -50,6 +71,14 @@ function Layout() {
     }
   ];
 
+  // 2. FUNÇÃO DE FILTRO
+  // Se o item não tiver 'roles', todo mundo vê.
+  // Se tiver, só vê quem tiver a role compatível.
+  const visibleMenuItems = menuItems.filter(item => {
+    if (!item.roles) return true; // Público
+    return item.roles.includes(userRole);
+  });
+
   return (
     <div className="flex h-screen bg-slate-100 font-sans">
       {/* Sidebar - Desktop */}
@@ -60,12 +89,12 @@ function Layout() {
             alt="Logo GriffinT"
             className="h-24 w-24 mt-5 object-contain rounded-md shadow-md"
           />
-          
         </div>
         <div className='h-8 flex items-center justify-center border-b border-slate-800'></div>
 
         <nav className="flex-1 px-2 py-4 space-y-1">
-          {menuItems.map((item) => {
+          {/* AQUI MUDAMOS DE menuItems.map PARA visibleMenuItems.map */}
+          {visibleMenuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
@@ -76,10 +105,6 @@ function Layout() {
                     : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
               >
-                {/* ATUALIZAÇÃO IMPORTANTE NO SVG: 
-                   Adicionei strokeWidth, strokeLinecap e strokeLinejoin aqui no pai 
-                   para que as linhas dos ícones fiquem arredondadas e visíveis.
-                */}
                 <svg
                   className={`mr-3 h-5 w-5 ${isActive ? 'text-amber-500' : 'text-slate-400 group-hover:text-white'}`}
                   fill="none"
@@ -99,10 +124,12 @@ function Layout() {
 
         <div className="p-4 border-t border-slate-800">
           <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-900 font-bold">U</div>
+            <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-900 font-bold">
+              {userRole.charAt(0)}
+            </div>
             <div className="ml-3">
               <p className="text-sm font-medium text-white">Usuário</p>
-              <p className="text-xs text-slate-400">Admin</p>
+              <p className="text-xs text-slate-400">{userRole}</p>
             </div>
           </div>
         </div>
@@ -123,7 +150,8 @@ function Layout() {
         {/* Menu Mobile */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-slate-900 text-white p-2 space-y-1">
-            {menuItems.map((item) => (
+            {/* Também usa a lista filtrada no mobile */}
+            {visibleMenuItems.map((item) => (
               <Link key={item.name} to={item.path} onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md hover:bg-slate-800">
                 {item.name}
               </Link>

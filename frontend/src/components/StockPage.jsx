@@ -76,7 +76,7 @@ function StockPage() {
             />
             <Search className="absolute left-3 top-2.5 text-slate-400 w-4 h-4" />
           </div>
-          <Link to={"/home/new-product"} className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 font-medium">
+          <Link to={"/home/novo-produto"} className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 font-medium">
             <Plus size={18} /> Novo Produto
           </Link>
         </div>

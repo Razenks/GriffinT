@@ -96,15 +96,15 @@ function DashboardHome() {
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <h3 className="text-lg font-bold text-slate-800 mb-4">Ações Rápidas</h3>
             <div className="grid grid-cols-2 gap-4 h-full max-h-[250px]">
-                <Link to={"/home/input"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                <Link to={"/home/entrada"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                       <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➕</span>
                       <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Entrada</span>
                 </Link>
-                <Link to={"/home/output"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                <Link to={"/home/saida"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">➖</span>
                     <span className="font-semibold text-slate-700 group-hover:text-amber-600">Nova Saída</span>
                 </Link>
-                <Link to={"/home/new-product"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
+                <Link to={"/home/novo-produto"} className="flex flex-col items-center justify-center p-4 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-amber-400 hover:shadow-md transition-all group bg-slate-50/50">
                     <span className="text-2xl mb-2 group-hover:scale-110 transition-transform">📦</span>
                     <span className="font-semibold text-slate-700 group-hover:text-amber-600">Novo Produto</span>
                 </Link>

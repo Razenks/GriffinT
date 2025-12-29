@@ -9,6 +9,7 @@ import Settings from './pages/Settings';
 import Input from './pages/Input';
 import Output from './pages/Output';
 import NewProduct from './pages/NewProduct';
+import UserManage from './pages/UserManage';
 import './index.css';
 
 function App() {
@@ -23,9 +24,10 @@ function App() {
         <Route path="/home/estoque" element={<Stock />} />
         <Route path="/home/relatorios" element={<Reports />} />
         <Route path="/home/config" element={<Settings />} />
-        <Route path="/home/input" element={< Input />} />
-        <Route path="/home/output" element={< Output />} />
-        <Route path="/home/new-product" element={< NewProduct />} />
+        <Route path="/home/entrada" element={< Input />} />
+        <Route path="/home/saida" element={< Output />} />
+        <Route path="/home/novo-produto" element={< NewProduct />} />
+        <Route path="/home/gerenciar-usuarios" element={< UserManage />} />
       </Route>
     </Routes>
   );
