@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GriffinT.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251222121656_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251230203501_ProductMovement")]
+    partial class ProductMovement
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace GriffinT.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("GriffinT.API.Entities.Product", b =>
@@ -62,6 +62,9 @@ namespace GriffinT.API.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CurrentStock")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -99,6 +102,32 @@ namespace GriffinT.API.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("GriffinT.API.Entities.ProductMovement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductMovements");
                 });
 
             modelBuilder.Entity("GriffinT.API.Entities.StockMovement", b =>

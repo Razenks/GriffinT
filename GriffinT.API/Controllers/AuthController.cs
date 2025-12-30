@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         }
     } 
 
-    [HttpDelete("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto dto)
     {
         var token = await _service.LoginAsync(dto);

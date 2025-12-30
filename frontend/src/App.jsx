@@ -1,5 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { PrivateRoute, AdminRoute } from './routes/PrivateRoutes';
+
 import Index from './pages/Index';
 import Layout from './Layout';
 import Home from './pages/Home';
@@ -18,16 +20,22 @@ function App() {
       <Route path="/" element={<Index />} />
       <Route path="/login" element={<Index />} />
 
-      {/* GRUPO 2: Rotas Privadas (Com Sidebar/Menu) */}
-      <Route path="/home" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="/home/estoque" element={<Stock />} />
-        <Route path="/home/relatorios" element={<Reports />} />
-        <Route path="/home/config" element={<Settings />} />
-        <Route path="/home/entrada" element={< Input />} />
-        <Route path="/home/saida" element={< Output />} />
-        <Route path="/home/novo-produto" element={< NewProduct />} />
-        <Route path="/home/gerenciar-usuarios" element={< UserManage />} />
+      <Route element={<PrivateRoute />}>
+        {/* GRUPO 2: Rotas Privadas (Com Sidebar/Menu) */}
+        <Route path="/home" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/home/estoque" element={<Stock />} />
+          <Route path="/home/relatorios" element={<Reports />} />
+          <Route path="/home/config" element={<Settings />} />
+          <Route path="/home/entrada" element={< Input />} />
+          <Route path="/home/saida" element={< Output />} />
+          <Route path="/home/novo-produto" element={< NewProduct />} />
+
+
+          <Route element={< AdminRoute />}>
+            <Route path="/home/gerenciar-usuarios" element={< UserManage />} />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   );

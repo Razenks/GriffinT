@@ -18,6 +18,7 @@ public class Product
     public decimal SalePrice {get; set;}
 
     // Controle de Estoque
+    public int CurrentStock { get; set; }
     public int Quantity { get; set; }
     public int MinStock { get; set; }
 

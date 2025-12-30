@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GriffinT.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ea4b5543736418f08d781c1e72cd11470d830822")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1efdb0ab923fbe9bad949811fc69fc33c99a856e")]
 [assembly: System.Reflection.AssemblyProductAttribute("GriffinT.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GriffinT.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

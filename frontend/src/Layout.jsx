@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { getUserRole, getUserName, logout } from './services/auth'; // Import atualizado
 import logo from './assets/logo-sem-fundo.png';
 
 function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // 1. LÓGICA DE SEGURANÇA
-  // Tenta pegar do localStorage (que faremos no Login). 
-  // Se não tiver, assume 'Admin' para testes.
-  // Mude para 'Seller' ou 'User' aqui manualmente para testar o sumiço do botão.
-  const userRole = localStorage.getItem('userRole') || 'Vendedor';
+  // Estados para Role e Nome
+  const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    // Carrega os dados salvos no Login
+    const role = getUserRole();
+    const name = getUserName();
+
+    setUserRole(role);
+    setUserName(name);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const menuItems = [
     {
       name: 'Visão Geral',
-      path: '/home',
+      path: '/home', // Se sua rota principal for /dashboard, ajuste aqui
       icon: <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" />
     },
     {
@@ -43,19 +56,17 @@ function Layout() {
         </>
       )
     },
-    // --- NOVO ITEM (Gerenciar Usuários) ---
+    // --- BOTÃO EXCLUSIVO PARA ADMIN ---
     {
       name: 'Gerenciar Usuários',
       path: '/home/gerenciar-usuarios',
-      // Defina aqui quem pode ver este botão:
-      roles: ['Admin', 'SuperAdmin'], 
+      roles: ['Admin', 'SuperAdmin'],
       icon: (
         <>
-           {/* Ícone de Usuários (Users) */}
-           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-           <circle cx="9" cy="7" r="4" />
-           <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </>
       )
     },
@@ -71,11 +82,9 @@ function Layout() {
     }
   ];
 
-  // 2. FUNÇÃO DE FILTRO
-  // Se o item não tiver 'roles', todo mundo vê.
-  // Se tiver, só vê quem tiver a role compatível.
+  // Filtra o menu baseado na Role
   const visibleMenuItems = menuItems.filter(item => {
-    if (!item.roles) return true; // Público
+    if (!item.roles) return true;
     return item.roles.includes(userRole);
   });
 
@@ -87,13 +96,12 @@ function Layout() {
           <img
             src={logo}
             alt="Logo GriffinT"
-            className="h-24 w-24 mt-5 object-contain rounded-md shadow-md"
+            className="h-18 w-18 object-contain" // Ajustei tamanho da logo para ficar proporcional
           />
         </div>
-        <div className='h-8 flex items-center justify-center border-b border-slate-800'></div>
+        <div className='mx-4 border-b border-slate-800'></div>
 
         <nav className="flex-1 px-2 py-4 space-y-1">
-          {/* AQUI MUDAMOS DE menuItems.map PARA visibleMenuItems.map */}
           {visibleMenuItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -101,8 +109,8 @@ function Layout() {
                 key={item.name}
                 to={item.path}
                 className={`group flex items-center px-2 py-3 text-sm font-medium rounded-md transition-colors ${isActive
-                    ? 'bg-slate-800 text-amber-500'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-slate-800 text-amber-500'
+                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
               >
                 <svg
@@ -122,24 +130,45 @@ function Layout() {
           })}
         </nav>
 
+        {/* --- RODAPÉ DA SIDEBAR (PERFIL) --- */}
         <div className="p-4 border-t border-slate-800">
-          <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-slate-900 font-bold">
-              {userRole.charAt(0)}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center min-w-0">
+              <div className="h-9 w-9 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-900 font-bold shadow-sm">
+                {/* Mostra a inicial do NOME do usuário, ou 'U' se vazio */}
+                {userName ? userName.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div className="ml-3 truncate">
+                <p className="text-sm font-medium text-white truncate w-32" title={userName}>
+                  {userName}
+                </p>
+                <p className="text-xs text-slate-400 truncate w-32" title={userRole}>
+                  {userRole}
+                </p>
+              </div>
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-white">Usuário</p>
-              <p className="text-xs text-slate-400">{userRole}</p>
-            </div>
+
+            {/* Botão de Logout */}
+            <button
+              onClick={handleLogout}
+              className="ml-2 text-slate-400 hover:text-red-400 transition-colors"
+              title="Sair do sistema"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
           </div>
         </div>
       </aside>
 
       {/* Mobile Header & Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Mobile Header */}
-        <header className="md:hidden bg-white shadow-sm h-16 flex items-center justify-between px-4">
-          <span className="font-bold text-slate-900">GriffinT</span>
+        <header className="md:hidden bg-white shadow-sm h-16 flex items-center justify-between px-4 z-10">
+          <div className="flex items-center">
+            <img src={logo} alt="Logo" className="h-8 w-8 mr-2" />
+            <span className="font-bold text-slate-900">GriffinT</span>
+          </div>
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-500 p-2 rounded hover:bg-slate-100">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -147,19 +176,19 @@ function Layout() {
           </button>
         </header>
 
-        {/* Menu Mobile */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-slate-900 text-white p-2 space-y-1">
-            {/* Também usa a lista filtrada no mobile */}
+          <div className="md:hidden bg-slate-900 text-white p-2 space-y-1 absolute top-16 left-0 right-0 z-20 shadow-xl">
             {visibleMenuItems.map((item) => (
               <Link key={item.name} to={item.path} onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md hover:bg-slate-800">
                 {item.name}
               </Link>
             ))}
+            <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-red-400 hover:bg-slate-800 rounded-md mt-2 border-t border-slate-700">
+              Sair
+            </button>
           </div>
         )}
 
-        {/* Área de Conteúdo */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <Outlet />
         </main>

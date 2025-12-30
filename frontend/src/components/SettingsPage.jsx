@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { jwtDecode } from "jwt-decode";
 import { 
   User, 
   Building, 
@@ -15,12 +16,48 @@ import logo from '../assets/logo.png'; // Usando a logo que você já configurou
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('company');
+  const [companyData, setCompanyData] = useState({
+    companyName: '',
+    cnpj: '',
+    isActive: ''
+  })
+  const [userName, setUserName ] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  
+  useEffect(() => {
+    async function fetchCompanyData() {
+      const token = localStorage.getItem('authToken');
+
+      if (token) {
+        const decoded = jwtDecode(token);
+
+        setUserName((decoded.Name) || decoded.name);
+        setUserEmail((decoded.Email) || decoded.email);
+      }
+
+      try {
+        const response = await fetch('http://localhost:5094/api/company/my-company', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setCompanyData(data);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados da empresa", error);
+      }
+    }
+
+    fetchCompanyData();
+  }, []);
 
   // Menu lateral de navegação
   const menuItems = [
     { id: 'company', label: 'Dados da Empresa', icon: <Building size={20} /> },
     { id: 'profile', label: 'Meu Perfil', icon: <User size={20} /> },
-    { id: 'users', label: 'Gestão de Usuários', icon: <Users size={20} /> },
     { id: 'notifications', label: 'Notificações', icon: <Bell size={20} /> },
     { id: 'security', label: 'Segurança & Backup', icon: <Shield size={20} /> },
   ];
@@ -87,16 +124,12 @@ function SettingsPage() {
                 {/* Formulario */}
                 <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700">Nome Fantasia</label>
-                    <input type="text" defaultValue="Ludens Store" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white focus:outline-none transition-all" />
+                    <label className="text-sm font-medium text-slate-700">Nome da Empresa</label>
+                    <input type="text" value={companyData.companyName} readOnly className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white focus:outline-none transition-all" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">CNPJ</label>
-                    <input type="text" defaultValue="00.000.000/0001-91" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white focus:outline-none transition-all" />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium text-slate-700">Endereço Completo</label>
-                    <input type="text" defaultValue="Av. Paulista, 1000 - São Paulo, SP" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white focus:outline-none transition-all" />
+                    <input type="text" value={companyData.cnpj} readOnly className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white focus:outline-none transition-all" />
                   </div>
                 </div>
               </div>
@@ -151,16 +184,11 @@ function SettingsPage() {
               <div className="grid grid-cols-1 gap-6 max-w-lg">
                 <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">Nome</label>
-                    <input type="text" defaultValue="Admin User" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white outline-none" />
+                    <input type="text" value={userName} readOnly className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white outline-none" />
                 </div>
                 <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">E-mail</label>
-                    <input type="email" defaultValue="admin@griffint.com" className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white outline-none" />
-                </div>
-                <div className="pt-4">
-                    <button className="text-amber-600 hover:text-amber-700 text-sm font-medium flex items-center gap-1 transition-colors">
-                        <Lock size={14}/> Alterar Senha
-                    </button>
+                    <input type="email" value={userEmail} readOnly className="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-2 text-slate-800 focus:border-amber-500 focus:bg-white outline-none" />
                 </div>
               </div>
             </div>
